@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Finch List</h1>
+
+{% for finch in finches %}
+  <div class="card" style="margin-bottom: 100px">
+    <div class="card-content">
+      <span class="card-title">{{ finch.species }}</span>
+      <p>Scientific Name: {{ finch.scientific_name }}</p>
+      <p>Description: {{ finch.description }}</p>
+      <p>Habitat: {{ finch.habitat }}</p>
+      <p>Diet: {{ finch.diet }} </p>
+      <p>Average Life Span: {{finch.average_lifespan}} </p>
+    </div>
+    <div class='card-image'>
+        <img src="{{ finch.image_url }}" alt="{{ finch.species }}">
+    </div>
+  </div>
+{% endfor %}
+
+{% endblock %}
