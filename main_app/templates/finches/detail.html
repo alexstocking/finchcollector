@@ -3,48 +3,57 @@
 
 <h1 class="title">{{finch.name_species }}</h1>
 
-<div class="card">
-    <div class="card-content">
-      <p><strong>Scientific Name:</strong> {{ finch.scientific_name }}</p>
-      <p><strong>Description:</strong>{{ finch.description|linebreaks }}</p>
-      <p><strong>Habitat:</strong> {{ finch.habitat }}</p>
-      <p><strong>Diet:</strong> {{ finch.diet }} </p>
-      <p><strong>Average Life Span:</strong> {{finch.average_lifespan}} </p>
+
+<div class="row">
+  <div class="col s6">
+    <div class="card">
+        <div class="card-content">
+          <p><strong>Scientific Name:</strong> {{ finch.scientific_name }}</p>
+          <p><strong>Description:</strong>{{ finch.description|linebreaks }}</p>
+          <p><strong>Habitat:</strong> {{ finch.habitat }}</p>
+          <p><strong>Diet:</strong> {{ finch.diet }} </p>
+          <p><strong>Average Life Span:</strong> {{finch.average_lifespan}} </p>
+          <br>
+          <div class='card-image'>
+            <img src="{{ finch.image_url }}" alt="{{ finch.species }}">
+        </div>
+        </div>
+        <div class="card-action">
+          <a href="{% url 'finches_update' finch.id %}">Edit</a>
+          <a href="{% url 'finches_delete' finch.id %}">Delete</a>
+        </div>
+      </div>
     </div>
-    <div class="card-action">
-      <a href="{% url 'finches_update' finch.id %}">Edit</a>
-      <a href="{% url 'finches_delete' finch.id %}">Delete</a>
+        <div class="col s6">
+          <form action="{% url 'add_feeding' finch.id %}" method="POST">
+            {% csrf_token %}
+            {{ feeding_form.as_p }}
+            <input type="submit" class="btn" value="Add Feeding">
+          </form>
+          <br>
+          {% if finch.fed_for_today %}
+            <div class="card-panel teal-text center-align">{{finch.name_species}} has been fed all meals for today</div>
+          {% else %}
+            <div class="card-panel red-text center-align">{{finch.name_species}} might be hungry</div>
+          {% endif %}
+          <table class="striped">
+            <thead>
+              <tr><th>Date</th><th>Meal</th></tr>
+            </thead>
+            <tbody>
+              {% for feeding in finch.feeding_set.all %}
+                <tr>
+                  <td>{{feeding.date}}</td>
+                  <td>{{feeding.get_meal_display}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
     </div>
-    <div class="col s6">
-      <form action="{% url 'add_feeding' finch.id %}" method="POST">
-        {% csrf_token %}
-        {{ feeding_form.as_p }}
-        <input type="submit" class="btn" value="Add Feeding">
-      </form>
-      <br>
-      {% if finch.fed_for_today %}
-        <div class="card-panel teal-text center-align">{{finch.name_species}} has been fed all meals for today</div>
-      {% else %}
-        <div class="card-panel red-text center-align">{{finch.name_species}} might be hungry</div>
-      {% endif %}
-      <table class="striped">
-        <thead>
-          <tr><th>Date</th><th>Meal</th></tr>
-        </thead>
-        <tbody>
-          {% for feeding in finch.feeding_set.all %}
-            <tr>
-              <td>{{feeding.date}}</td>
-              <td>{{feeding.get_meal_display}}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div class='card-image'>
-        <img src="{{ finch.image_url }}" alt="{{ finch.species }}">
-    </div>
-</div>
+  </div>
+      {% comment %} <div class='card-image'>
+          <img src="{{ finch.image_url }}" alt="{{ finch.species }}">
+      </div> {% endcomment %}
 <hr>
 <div class="row">
   <div class="col s6">
